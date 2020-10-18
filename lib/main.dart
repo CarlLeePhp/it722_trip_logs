@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:trip_logs/form_page.dart';
+import './routes/position_list_page.dart';
+import './routes/map_page.dart';
+import 'package:trip_logs/user_page.dart';
+import 'package:trip_logs/Global.dart';
 
 void main() {
+  // Global.init().then((e) => runApp(MyApp()));
   runApp(MyApp());
 }
 
@@ -11,22 +20,70 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => PositionListRoute(),
+        "map_page": (context) => MapRoute(ModalRoute.of(context).settings.arguments),
+        "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments),
+        "user_page": (context) => UserRoute()
+      },
+      // home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MainMap extends StatefulWidget {
+  @override
+  _MainMapState createState() => _MainMapState();
+}
+
+class _MainMapState extends State<MainMap> {
+  final CameraPosition position = CameraPosition(target: LatLng(-46, 170), zoom: 10);
+  List<Marker> markers = [];
+
+  Future _getCurrentLocation() async{
+    bool isGeolocationAvailable = await isLocationServiceEnabled();
+    Position _position = Position(latitude: this.position.target.latitude, longitude: this.position.target.longitude);
+    if(isGeolocationAvailable){
+      try {
+        _position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      }
+      catch (error) {
+        return _position;
+      }
+      return _position;
+    }
+  }
+
+  void addMarker(Position pos, String markerId, String markerTitle){
+    final marker = Marker(
+      markerId: MarkerId(markerId),
+      position: LatLng(pos.latitude, pos.longitude),
+      infoWindow: InfoWindow(title: markerTitle),
+    );
+    markers.add(marker);
+    setState(() {
+      markers = markers;
+    });
+  }
+
+  @override
+  void initState(){
+    _getCurrentLocation().then((pos) => addMarker(pos, 'curropos', 'You are here!'))
+        .catchError((err) => print(err.toString()));
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(title: Text('Trip Logs'),),
+      body: Container(child: GoogleMap(
+        initialCameraPosition: position,
+        markers: Set<Marker>.of(markers),
+      ),),
     );
   }
 }
@@ -50,27 +107,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final CameraPosition position = CameraPosition(target: LatLng(-46, 170), zoom: 10);
   int _counter = 0;
+  String _message = '';
+  Position _position = Position(latitude: -46, longitude: 168);
+
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
+  void _updateMessage(){
+    String newMessage = 'Clicked Me';
+    setState(() {
+      _message = newMessage;
+    });
+  }
 
+  void _getCurrentPosition() async {
+    // Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await getLastKnownPosition();
+    setState(() {
+      _position = position;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -81,20 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
@@ -104,6 +154,15 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Text(
+              'Latitude: $_position'
+            ),
+            Text(
+              '$_message'
+            ),
+            RaisedButton(onPressed: _getCurrentPosition,
+              child: Text('Press Me'),
+            )
           ],
         ),
       ),
