@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:trip_logs/form_page.dart';
+import './routes/form_page.dart';
 import './routes/position_list_page.dart';
 import './routes/map_page.dart';
 import 'package:trip_logs/user_page.dart';
