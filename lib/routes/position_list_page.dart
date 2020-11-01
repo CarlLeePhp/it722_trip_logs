@@ -14,6 +14,7 @@ class _PositionListRouteState extends State<PositionListRoute> {
   var _listAll = [];
   String _userId;
   String _tempUserId;
+
   void toSettings() {
     setState(() {
       _userId = null;
@@ -60,6 +61,17 @@ class _PositionListRouteState extends State<PositionListRoute> {
     setState(() {
       _listAll = locations;
     });
+
+    var tmpList = [];
+    for(int i=0; i<this._listAll.length; i++){
+      if(_listAll[i].userId == _userId){
+        tmpList.add(_listAll[i]);
+      }
+    }
+    setState(() {
+      _list = tmpList;
+    });
+
   }
   void filterData(){
     var tmpList = [];
@@ -72,6 +84,8 @@ class _PositionListRouteState extends State<PositionListRoute> {
       _list = tmpList;
     });
   }
+
+
   @override
   void initState() {
     getDataFromWeb();
@@ -107,26 +121,21 @@ class _PositionListRouteState extends State<PositionListRoute> {
         ),
       );
     } else {
-      filterData();
-      return Scaffold(
-        appBar: AppBar(title: Text('User ID: $_userId'), actions: <Widget>[
-          IconButton(icon: Icon(Icons.account_circle),onPressed: toSettings,),
-          IconButton(icon: Icon(Icons.add_circle_outline), onPressed: createLocation)
-        ],),
-        body: ListView.builder(
-            itemCount: _list.length,
-            itemExtent: 50,
-            itemBuilder: (BuildContext context, int index){
-              return ListTile(
-                title: Text(_list[index].description),
-                subtitle: Text("Latitude: " + _list[index].latitude.toString()
-                    + " Longitude: " + _list[index].longitude.toString()),
-              );
+      return FutureBuilder(
+        future: getDataFromWeb(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.connectionState == ConnectionState.done){
+            if(snapshot.hasError){
+              return Text("Error: ${snapshot.error}");
+            } else {
+              return Text("Good");
             }
-        ),
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
       );
     }
-
 
   }
 }

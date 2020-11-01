@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import './routes/form_page.dart';
 import './routes/position_list_page.dart';
 import './routes/map_page.dart';
+import './routes/alert_page.dart';
 import 'package:trip_logs/user_page.dart';
 import 'package:trip_logs/Global.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
+        "alert_page": (context) => AlertRoute(),
         "/": (context) => PositionListRoute(),
         "map_page": (context) => MapRoute(ModalRoute.of(context).settings.arguments),
         "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments),
