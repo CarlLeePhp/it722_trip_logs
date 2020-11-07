@@ -16,6 +16,14 @@ class _MapRouteState extends State<MapRoute> {
   String _userId;
   Location _currentLocation;
   final CameraPosition position = CameraPosition(target: LatLng(-46.413115, 168.355103), zoom: 10);
+  final AlertDialog dialog = AlertDialog(
+    title: Text("Enter your description:"),
+    actions: [
+      //FlatButton(onPressed: () => Navigator.of(context).pop(), child: Text('CANCEL')),
+      //FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL'))
+    ],
+  );
+
   List<Marker> markers = [];
 
   Future _getCurrentLocation() async{
@@ -50,6 +58,7 @@ class _MapRouteState extends State<MapRoute> {
   _MapRouteState(String userId){
     this._userId = userId;
   }
+
   @override
   void initState() {
     _getCurrentLocation().then((pos) => addMarker(pos, 'curropos', 'You are here!'))
@@ -75,3 +84,4 @@ class _MapRouteState extends State<MapRoute> {
     );
   }
 }
+

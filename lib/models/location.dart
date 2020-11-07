@@ -2,6 +2,7 @@ class Location {
   double _latitude;
   double _longitude;
   String _userId;
+  String _description;
 
   String get userId => _userId;
   set userId(String value){
@@ -13,8 +14,6 @@ class Location {
   set latitude(double value) {
     _latitude = value;
   }
-
-  String _description;
 
   double get longitude => _longitude;
 
