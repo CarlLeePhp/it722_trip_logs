@@ -1,15 +1,30 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import './routes/form_page.dart';
 import './routes/position_list_page.dart';
 import './routes/map_page.dart';
 import 'package:trip_logs/user_page.dart';
+import './routes/alert_page.dart';
 import 'package:trip_logs/Global.dart';
+
+// Sets a platform override for desktop to avoid exceptions. See
+// https://flutter.dev/desktop#target-platform-override for more info.
+void _enablePlatformOverrideForDesktop() {
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  }
+}
 
 void main() {
   // Global.init().then((e) => runApp(MyApp()));
+  _enablePlatformOverrideForDesktop();
   runApp(MyApp());
 }
 
@@ -25,7 +40,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/": (context) => PositionListRoute(),
+        "/": (context) => AlertRoute(),
+        "position_page": (context) => PositionListRoute(),
         "map_page": (context) => MapRoute(ModalRoute.of(context).settings.arguments),
         "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments),
         "user_page": (context) => UserRoute()

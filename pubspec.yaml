@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   google_maps_flutter: ^1.0.3
   geolocator: ^6.0.0+4
+  connectivity: ^2.0.0
   shared_preferences: ^0.5.12+2
 
 dev_dependencies:
