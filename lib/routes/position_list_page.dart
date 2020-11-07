@@ -11,7 +11,6 @@ class PositionListRoute extends StatefulWidget {
 
 class _PositionListRouteState extends State<PositionListRoute> {
   var _list = [];
-  var _listAll = [];
   String _userId;
   String _tempUserId;
 
@@ -32,18 +31,6 @@ class _PositionListRouteState extends State<PositionListRoute> {
     Location location;
     location.userId = this._userId;
     await Navigator.pushNamed(context, 'map_page', arguments: location);
-  }
-
-  void filterData() {
-    var tmpList = [];
-    for (int i = 0; i < this._listAll.length; i++) {
-      if (_listAll[i].userId == _userId) {
-        tmpList.add(_listAll[i]);
-      }
-    }
-    setState(() {
-      _list = tmpList;
-    });
   }
 
   @override
@@ -99,18 +86,16 @@ class _PositionListRouteState extends State<PositionListRoute> {
                   onPressed: createLocation)
             ],
           ),
-          body: SetData(this._listAll, this._list, this._userId));
+          body: SetData( this._list, this._userId));
     }
   }
 }
 
 class SetData extends StatefulWidget {
-  var _listAll;
   var _list;
   var _userId;
 
-  SetData(var listAll, var list, var userId) {
-    this._listAll = listAll;
+  SetData(var list, var userId) {
     this._list = list;
     this._userId = userId;
   }

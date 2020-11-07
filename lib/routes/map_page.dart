@@ -4,25 +4,19 @@ import 'package:geolocator/geolocator.dart';
 import '../models/location.dart';
 
 class MapRoute extends StatefulWidget {
+  Location _location;
   String userId;
-  MapRoute(String userId){
-    this.userId = userId;
+  MapRoute(Location location){
+    this._location = location;
   }
   @override
-  _MapRouteState createState() => _MapRouteState(this.userId);
+  _MapRouteState createState() => _MapRouteState();
 }
 
 class _MapRouteState extends State<MapRoute> {
-  String _userId;
+
   Location _currentLocation;
   final CameraPosition position = CameraPosition(target: LatLng(-46.413115, 168.355103), zoom: 10);
-  final AlertDialog dialog = AlertDialog(
-    title: Text("Enter your description:"),
-    actions: [
-      //FlatButton(onPressed: () => Navigator.of(context).pop(), child: Text('CANCEL')),
-      //FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL'))
-    ],
-  );
 
   List<Marker> markers = [];
 
@@ -47,21 +41,16 @@ class _MapRouteState extends State<MapRoute> {
       infoWindow: InfoWindow(title: markerTitle),
     );
     markers.add(marker);
-    Location location = new Location(pos.latitude, pos.longitude);
-    location.userId = _userId;
+    widget._location.longitude = pos.longitude;
+    widget._location.latitude = pos.latitude;
     setState(() {
       markers = markers;
-      _currentLocation = location;
     });
-  }
-
-  _MapRouteState(String userId){
-    this._userId = userId;
   }
 
   @override
   void initState() {
-    _getCurrentLocation().then((pos) => addMarker(pos, 'curropos', 'You are here!'))
+    _getCurrentLocation().then((pos) => addMarker(pos, 'currpos', 'You are here!'))
         .catchError((err) => print(err.toString()));
     super.initState();
   }
@@ -69,11 +58,11 @@ class _MapRouteState extends State<MapRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User ID: $_userId'),
+      appBar: AppBar(title: Text('User ID: ${widget._location.userId}'),
         actions: [
           IconButton(icon: Icon(Icons.autorenew),onPressed: () => _getCurrentLocation().then((pos) => addMarker(pos, 'curropos', 'You are here!'))
               .catchError((err) => print(err.toString())),),
-          IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () => Navigator.of(context).pushNamed("form_page", arguments: this._currentLocation))
+          IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () => Navigator.of(context).pushNamed("form_page", arguments: widget._location))
         ],
       ),
       body: GoogleMap(

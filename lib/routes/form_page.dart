@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import '../models/location.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -14,7 +13,6 @@ class FormRoute extends StatefulWidget {
 }
 
 class _FormRouteState extends State<FormRoute> {
-  String _description;
   Location _currentLocation;
 
   _FormRouteState(Location currentLocation){
@@ -45,6 +43,8 @@ class _FormRouteState extends State<FormRoute> {
       body: Column(
         children: [
           Spacer(flex: 2,),
+          Text("Lat: ${_currentLocation.latitude}, Long: ${_currentLocation.longitude}"),
+          Spacer(flex: 1,),
           TextField(
             decoration: InputDecoration(
               labelText: "Description",
