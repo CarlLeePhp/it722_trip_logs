@@ -28,11 +28,17 @@ class _PositionListRouteState extends State<PositionListRoute> {
   }
 
   void createLocation() async {
-    Location location;
+    Location location = new Location(0.0, 0.0);
     location.userId = this._userId;
     await Navigator.pushNamed(context, 'map_page', arguments: location);
+    resetList();
   }
 
+  void resetList(){
+    setState(() {
+      _list.clear();
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -122,6 +128,7 @@ class RequestData extends State<SetData> {
       locations.add(location);
     }
     httpClient.close();
+    widget._list.clear();
     for (int i = 0; i < locations.length; i++) {
       if (locations[i].userId == widget._userId) {
         widget._list.add(locations[i]);
@@ -137,9 +144,11 @@ class RequestData extends State<SetData> {
       future: getDataFromWeb(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.hasError) {
-          return Text("Error: ${snapshot.error}");
+          return Text("Cannot get data from the Server, please check your internet.") ; // Text("Error: ${snapshot.error}")
         } else if (snapshot.connectionState == ConnectionState.done) {}
         return ListView.builder(
             itemCount: widget._list.length,

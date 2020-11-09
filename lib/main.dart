@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import './routes/form_page.dart';
 import './routes/position_list_page.dart';
 import './routes/map_page.dart';
-import './routes/alert_page.dart';
-import 'package:trip_logs/user_page.dart';
 
 // Sets a platform override for desktop to avoid exceptions. See
 // https://flutter.dev/desktop#target-platform-override for more info.
@@ -34,11 +32,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "alert_page": (context) => AlertRoute(),
         "/": (context) => PositionListRoute(),
         "map_page": (context) => MapRoute(ModalRoute.of(context).settings.arguments),
-        "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments),
-        "user_page": (context) => UserRoute()
+        "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments)
       },
     );
   }

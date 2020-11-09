@@ -16,7 +16,7 @@ class MapRoute extends StatefulWidget {
 class _MapRouteState extends State<MapRoute> {
 
   Location _currentLocation;
-  final CameraPosition position = CameraPosition(target: LatLng(-46.413115, 168.355103), zoom: 10);
+  final CameraPosition position = CameraPosition(target: LatLng(-46.413115, 168.355103), zoom: 14);
 
   List<Marker> markers = [];
 
@@ -60,8 +60,6 @@ class _MapRouteState extends State<MapRoute> {
     return Scaffold(
       appBar: AppBar(title: Text('User ID: ${widget._location.userId}'),
         actions: [
-          IconButton(icon: Icon(Icons.autorenew),onPressed: () => _getCurrentLocation().then((pos) => addMarker(pos, 'curropos', 'You are here!'))
-              .catchError((err) => print(err.toString())),),
           IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () => Navigator.of(context).pushNamed("form_page", arguments: widget._location))
         ],
       ),
