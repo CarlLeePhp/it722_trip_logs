@@ -92,7 +92,14 @@ class _PositionListRouteState extends State<PositionListRoute> {
                   onPressed: createLocation)
             ],
           ),
-          body: SetData( this._list, this._userId));
+          body: SetData( this._list, this._userId),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            backgroundColor: Colors.blue,
+            onPressed: createLocation,
+          ),
+      );
+
     }
   }
 }
@@ -154,15 +161,19 @@ class RequestData extends State<SetData> {
             itemCount: widget._list.length,
             itemExtent: 50,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(widget._list[index].description),
-                subtitle: Text("Latitude: " +
-                    widget._list[index].latitude.toString() +
-                    " Longitude: " +
-                    widget._list[index].longitude.toString()),
+              return Card(
+
+                child: ListTile(
+                  title: Text(widget._list[index].description),
+                  subtitle: Text("Latitude: " +
+                      widget._list[index].latitude.toString() +
+                      " Longitude: " +
+                      widget._list[index].longitude.toString()),
+                )
               );
             });
       },
     );
   }
 }
+
