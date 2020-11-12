@@ -32,10 +32,12 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/": (context) => PositionListRoute(),
-        "map_page": (context) => MapRoute(ModalRoute.of(context).settings.arguments),
+        "position_page": (context) => PositionListRoute(),
+        "/": (context) => MapRoute(),
         "form_page": (context) => FormRoute(ModalRoute.of(context).settings.arguments)
       },
     );
   }
 }
+
+
